@@ -51,7 +51,7 @@ var ITEMS_PER_PAGE = 5;
 // Hardcoded USERID for use with the shopping cart portion
 var USERID = "558098a65133816958968d88";
 
-MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
+MongoClient.connect('mongodb://localhost:27017/mongomart', (err, db) => {
     "use strict";
 
     assert.equal(null, err);
@@ -63,17 +63,17 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     var router = express.Router();
 
     // Homepage
-    router.get("/", function(req, res) {
+    router.get("/", (req, res) => {
         "use strict";
 
         var page = req.query.page ? parseInt(req.query.page) : 0;
         var category = req.query.category ? req.query.category : "All";
 
-        items.getCategories(function(categories) {
+        items.getCategories((categories) => {
 
-            items.getItems(category, page, ITEMS_PER_PAGE, function(pageItems) {
+            items.getItems(category, page, ITEMS_PER_PAGE, (pageItems) => {
 
-                items.getNumItems(category, function(itemCount) {
+                items.getNumItems(category, (itemCount) => {
 
                     var numPages = 0;
                     if (itemCount > ITEMS_PER_PAGE) {
@@ -94,15 +94,15 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     });
 
 
-    router.get("/search", function(req, res) {
+    router.get("/search", (req, res) => {
         "use strict";
 
         var page = req.query.page ? parseInt(req.query.page) : 0;
         var query = req.query.query ? req.query.query : "";
 
-        items.searchItems(query, page, ITEMS_PER_PAGE, function(searchItems) {
+        items.searchItems(query, page, ITEMS_PER_PAGE, (searchItems) => {
 
-            items.getNumSearchItems(query, function(itemCount) {
+            items.getNumSearchItems(query, (itemCount) => {
 
                 var numPages = 0;
 
@@ -121,12 +121,12 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     });
 
 
-    router.get("/item/:itemId", function(req, res) {
+    router.get("/item/:itemId", (req, res) => {
         "use strict";
 
         var itemId = parseInt(req.params.itemId);
 
-        items.getItem(itemId, function(item) {
+        items.getItem(itemId, (item) => {
             console.log(item);
 
             if (item == null) {
@@ -152,7 +152,7 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
                 }
             }
 
-            items.getRelatedItems(function(relatedItems) {
+            items.getRelatedItems((relatedItems) => {
 
                 console.log(relatedItems);
                 res.render("item",
@@ -169,7 +169,7 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     });
 
 
-    router.post("/item/:itemId/reviews", function(req, res) {
+    router.post("/item/:itemId/reviews", (req, res) => {
         "use strict";
 
         var itemId = parseInt(req.params.itemId);
@@ -177,7 +177,7 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
         var name = req.body.name;
         var stars = parseInt(req.body.stars);
 
-        items.addReview(itemId, review, name, stars, function(itemDoc) {
+        items.addReview(itemId, review, name, stars, (itemDoc) => {
             res.redirect("/item/" + itemId);
         });
     });
@@ -190,16 +190,16 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
      * defined above.
      *
      */
-    router.get("/cart", function(req, res) {
+    router.get("/cart", (req, res) => {
         res.redirect("/user/" + USERID + "/cart");
     });
 
 
-    router.get("/user/:userId/cart", function(req, res) {
+    router.get("/user/:userId/cart", (req, res) => {
         "use strict";
 
         var userId = req.params.userId;
-        cart.getCart(userId, function(userCart) {
+        cart.getCart(userId, (userCart) => {
             var total = cartTotal(userCart);
             res.render("cart",
                        {
@@ -212,13 +212,13 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     });
 
 
-    router.post("/user/:userId/cart/items/:itemId", function(req, res) {
+    router.post("/user/:userId/cart/items/:itemId", (req, res) => {
         "use strict";
 
         var userId = req.params.userId;
         var itemId = parseInt(req.params.itemId);
 
-        var renderCart = function(userCart) {
+        var renderCart = (userCart) => {
             var total = cartTotal(userCart);
             res.render("cart",
                        {
@@ -229,17 +229,17 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
                        });
         };
 
-        cart.itemInCart(userId, itemId, function(item) {
+        cart.itemInCart(userId, itemId, (item) => {
             if (item == null) {
-                items.getItem(itemId, function(item) {
+                items.getItem(itemId, (item) => {
                     item.quantity = 1;
-                    cart.addItem(userId, item, function(userCart) {
+                    cart.addItem(userId, item, (userCart) => {
                         renderCart(userCart);
                     });
 
                 });
             } else {
-                cart.updateQuantity(userId, itemId, item.quantity+1, function(userCart) {
+                cart.updateQuantity(userId, itemId, item.quantity+1, (userCart) => {
                     renderCart(userCart);
                 });
             }
@@ -247,14 +247,14 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     });
 
 
-    router.post("/user/:userId/cart/items/:itemId/quantity", function(req, res) {
+    router.post("/user/:userId/cart/items/:itemId/quantity", (req, res) => {
         "use strict";
 
         var userId = req.params.userId;
         var itemId = parseInt(req.params.itemId);
         var quantity = parseInt(req.body.quantity);
 
-        cart.updateQuantity(userId, itemId, quantity, function(userCart) {
+        cart.updateQuantity(userId, itemId, quantity, (userCart) => {
             var total = cartTotal(userCart);
             res.render("cart",
                        {
@@ -284,10 +284,7 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', function(err, db) {
     app.use('/', router);
 
     // Start the server listening
-    /*var server = app.listen(3000, function() {
-        var port = server.address().port;
-        console.log('Mongomart server listening on port %s.', port);
-    });*/
+
     var port = process.env.PORT || 3000;
     app.listen(port, () => {
       console.log('Server running on localhost:' + port);
