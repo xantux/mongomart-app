@@ -69,7 +69,12 @@ function ItemDAO(database) {
       query = {};
     }
 
+    var sortObj = {
+      "_id": 1
+    };
+
     this.db.collection('item').find(query)
+      .sort(sortObj)
       .limit(itemsPerPage)
       .skip(page * itemsPerPage)
       .toArray((err, items) => {
