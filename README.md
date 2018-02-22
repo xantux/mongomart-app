@@ -9,5 +9,6 @@ Follow these steps:
 2) Open terminal and clone this repository in your own local machine: **git clone https://github.com/xantux/mongomart-app.git**
 3) In the terminal go to the root folder of the project: **cd mongomart-app**
 4) Install all dependencies by typing the command: **npm install**
-5) Run the application by typing **node mongomart**
-6) In your browser visit [http://localhost:3000](http://localhost:3000)
+5) Make sure you run in other terminal instance the mongo process by typing the command **mongod**
+6) Run the application by typing **node mongomart**
+7) In your browser visit [http://localhost:3000](http://localhost:3000)
