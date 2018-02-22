@@ -10,4 +10,4 @@ Follow these steps:
 3) In the terminal go to the root folder of the project: **cd mongomart-app**
 4) Install all dependencies by typing the command: **npm install**
 5) Run the application by typing **node mongomart**
-6)) In your browser visit [http://localhost:3000](http://localhost:3000)
+6) In your browser visit [http://localhost:3000](http://localhost:3000)
