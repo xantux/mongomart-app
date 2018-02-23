@@ -158,12 +158,12 @@ function ItemDAO(database) {
   };
 
 
-  this.getRelatedItems = function(callback) {
+  this.getRelatedItems = (callback) => {
     "use strict";
 
     this.db.collection("item").find({})
       .limit(4)
-      .toArray(function(err, relatedItems) {
+      .toArray((err, relatedItems) => {
         assert.equal(null, err);
         callback(relatedItems);
       });
