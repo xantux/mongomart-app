@@ -10,5 +10,7 @@ Follow these steps:
 3) In the terminal go to the root folder of the project: **cd mongomart-app**
 4) Install all dependencies by typing the command: **npm install**
 5) Make sure you run in other terminal instance the mongo process by typing the command **mongod**
-6) Run the application by typing **node mongomart**
-7) In your browser visit [http://localhost:3000](http://localhost:3000)
+6) Import the "item" collection: mongoimport -d mongomart -c item data/items.json
+7) Import the "cart" collection: mongoimport -d mongomart -c cart data/cart.json
+8) Run the application by typing **node mongomart**
+9) In your browser visit [http://localhost:3000](http://localhost:3000)
