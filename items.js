@@ -185,7 +185,7 @@ function ItemDAO(database) {
   };
 
 
-  this.createDummyItem = function() {
+  this.createDummyItem = () => {
     "use strict";
 
     var item = {
