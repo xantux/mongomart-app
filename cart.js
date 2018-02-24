@@ -106,7 +106,7 @@ function CartDAO(database) {
     };
 
 
-    this.createDummyItem = function() {
+    this.createDummyItem = () => {
         "use strict";
 
         var item = {
@@ -123,7 +123,7 @@ function CartDAO(database) {
         };
 
         return item;
-    }
+    };
 
 }
 
