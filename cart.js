@@ -24,7 +24,6 @@ function CartDAO(database) {
 
     this.db = database;
 
-
     this.getCart = (userId, callback) => {
         "use strict";
 
@@ -68,61 +67,42 @@ function CartDAO(database) {
             (err, result) => {
                 assert.equal(null, err);
                 callback(result.value);
-            });
+            }
+        );
     };
 
 
     this.updateQuantity = (userId, itemId, quantity, callback) => {
         "use strict";
 
-    var updateObj = { 
-        "$set": { 
-            "items.$.quantity": quantity 
-        } 
-    };
-
-    if (quantity == 0) {
-        updateObj = { 
-            "$pull": { 
-                items: { 
-                    _id: itemId 
-                } 
+        var updateObj = { 
+            "$set": { 
+                "items.$.quantity": quantity 
             } 
         };
-    }
 
-    this.db.collection("cart").findOneAndUpdate(
-        { 
-            userId: userId,
-            "items._id": itemId 
-        },
-        updateObj,
-        { returnOriginal: false },
-        (err, result) => {
-            assert.equal(null, err);
-            console.log(result.value);
-            callback(result.value);
-        });
-    };
+        if (quantity == 0) {
+            updateObj = { 
+                "$pull": { 
+                    items: { 
+                        _id: itemId 
+                    } 
+                } 
+            };
+        }
 
-
-    this.createDummyItem = () => {
-        "use strict";
-
-        var item = {
-            _id: 1,
-            title: "Gray Hooded Sweatshirt",
-            description: "The top hooded sweatshirt we offer",
-            slogan: "Made of 100% cotton",
-            stars: 0,
-            category: "Apparel",
-            img_url: "/img/products/hoodie.jpg",
-            price: 29.99,
-            quantity: 1,
-            reviews: []
-        };
-
-        return item;
+        this.db.collection("cart").findOneAndUpdate(
+            { 
+                userId: userId,
+                "items._id": itemId 
+            },
+            updateObj,
+            { returnOriginal: false },
+            (err, result) => {
+                assert.equal(null, err);
+                callback(result.value);
+            }
+        );
     };
 
 }

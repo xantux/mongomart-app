@@ -60,19 +60,20 @@ function ItemDAO(database) {
   this.getItems = (category, page, itemsPerPage, callback) => {
     "use strict";
 
-    var query = {
+    var queryObj = {
       "category": category
     };
 
     if (category == "All") {
-      query = {};
+      queryObj = {};
     }
 
     var sortObj = {
       "_id": 1
     };
 
-    this.db.collection('item').find(query)
+    this.db.collection('item')
+      .find(queryObj)
       .sort(sortObj)
       .limit(itemsPerPage)
       .skip(page * itemsPerPage)
@@ -86,18 +87,21 @@ function ItemDAO(database) {
   this.getNumItems = (category, callback) => {
     "use strict";
 
-    var query = {
+    var queryObj = {
       category: category
     };
 
     if (category === "All") {
-      query = {};
+      queryObj = {};
     }
 
-    this.db.collection('item').find(query).count((err, numItems) => {
-      if (err) throw err;
-      callback(numItems);
-    });
+    this.db.collection('item')
+      .find(queryObj)
+      .count((err, numItems) => {
+        if (err) throw err;
+        callback(numItems);
+      }
+    );
 
   };
 
@@ -115,14 +119,17 @@ function ItemDAO(database) {
       "_id": 1
     };
 
-    this.db.collection('item').find(queryObj)
+    this.db.collection('item')
+      .find(queryObj)
       .sort(sortObj)
       .limit(itemsPerPage)
       .skip(page * itemsPerPage)
       .toArray((err, items) => {
         assert.equal(err, null);
         callback(items);
-      });
+      }
+    );
+
   };
 
 
@@ -135,10 +142,14 @@ function ItemDAO(database) {
       }
     };
 
-    this.db.collection('item').find(queryObj).count((err, numItems) => {
-      assert.equal(err, null);
-      callback(numItems);
-    });
+    this.db.collection('item')
+      .find(queryObj)
+      .count((err, numItems) => {
+        assert.equal(err, null);
+        callback(numItems);
+      }
+    );
+
   };
 
 
@@ -149,59 +160,55 @@ function ItemDAO(database) {
       _id: itemId 
     };
 
-    this.db.collection('item').find(queryObj).limit(1).next((err, item) => {
+    this.db.collection('item')
+      .find(queryObj)
+      .limit(1)
+      .next((err, item) => {
         assert.equal(err, null);
         callback(item);
-    });
+      }
+    );
+
   };
 
 
   this.getRelatedItems = (callback) => {
     "use strict";
 
-    this.db.collection("item").find({})
+    this.db.collection("item")
+      .find({})
       .limit(4)
       .toArray((err, relatedItems) => {
         assert.equal(null, err);
         callback(relatedItems);
-      });
+      }
+    );
+
   };
 
 
   this.addReview = (itemId, comment, name, stars, callback) => {
     "use strict";
 
-    var reviewDoc = {
+    var reviewObj = {
       name: name,
       comment: comment,
       stars: stars,
       date: Date.now()
     };
   
-    this.db.collection('item').updateOne({ "_id": itemId }, { $push: { "reviews": reviewDoc } }, (err, item) => {
-      assert.equal(err, null);
-      callback(item);
-    });
+    this.db.collection('item')
+      .updateOne(
+        { "_id": itemId }, 
+        { $push: { "reviews": reviewObj } }, 
+        (err, item) => {
+          assert.equal(err, null);
+          callback(item);
+      }
+    );
+
   };
 
-
-  this.createDummyItem = () => {
-    "use strict";
-
-    var item = {
-      _id: 1,
-      title: "Gray Hooded Sweatshirt",
-      description: "The top hooded sweatshirt we offer",
-      slogan: "Made of 100% cotton",
-      stars: 0,
-      category: "Apparel",
-      img_url: "/img/products/hoodie.jpg",
-      price: 29.99,
-      reviews: []
-    };
-
-    return item;
-  }
 }
 
 

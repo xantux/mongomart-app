@@ -127,7 +127,6 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', (err, db) => {
         var itemId = parseInt(req.params.itemId);
 
         items.getItem(itemId, (item) => {
-            console.log(item);
 
             if (item == null) {
                 res.status(404).send("Item not found.");
@@ -154,7 +153,6 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', (err, db) => {
 
             items.getRelatedItems((relatedItems) => {
 
-                console.log(relatedItems);
                 res.render("item",
                            {
                                userId: USERID,
