@@ -72,38 +72,39 @@ function CartDAO(database) {
     };
 
 
-    this.updateQuantity = function(userId, itemId, quantity, callback) {
+    this.updateQuantity = (userId, itemId, quantity, callback) => {
         "use strict";
 
-        /*
-        * TODO-lab7
-        *
-        * LAB #7: Update the quantity of an item in the user's cart in the
-        * database by setting quantity to the value passed in the quantity
-        * parameter. If the value passed for quantity is 0, remove the item
-        * from the user's cart stored in the database.
-        *
-        * Pass the updated user's cart to the callback.
-        *
-        * NOTE: Use the solution for addItem as a guide to your solution for
-        * this problem. There are several ways to solve this. By far, the
-        * easiest is to use the $ operator. See:
-        * https://docs.mongodb.org/manual/reference/operator/update/positional/
-        *
-        */
+    var updateObj = { 
+        "$set": { 
+            "items.$.quantity": quantity 
+        } 
+    };
 
-        var userCart = {
-            userId: userId,
-            items: []
-        }
-        var dummyItem = this.createDummyItem();
-        dummyItem.quantity = quantity;
-        userCart.items.push(dummyItem);
-        callback(userCart);
-
-        // TODO-lab7 Replace all code above (in this method).
-
+    if (quantity == 0) {
+        updateObj = { 
+            "$pull": { 
+                items: { 
+                    _id: itemId 
+                } 
+            } 
+        };
     }
+
+    this.db.collection("cart").findOneAndUpdate(
+        { 
+            userId: userId,
+            "items._id": itemId 
+        },
+        updateObj,
+        { returnOriginal: false },
+        (err, result) => {
+            assert.equal(null, err);
+            console.log(result.value);
+            callback(result.value);
+        });
+    };
+
 
     this.createDummyItem = function() {
         "use strict";
