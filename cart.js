@@ -39,37 +39,19 @@ function CartDAO(database) {
     };
 
 
-    this.itemInCart = function(userId, itemId, callback) {
+    this.itemInCart = (userId, itemId, callback) => {
         "use strict";
 
-        /*
-         *
-         * TODO-lab6
-         *
-         * LAB: #6
-         *
-         * Write a query that will determine whether or not the cart associated
-         * with the userId contains an item identified by itemId. If the cart
-         * does contain the item, pass the item to the callback. If it does not,
-         * pass the value null to the callback.
-         *
-         * NOTE: You should pass only the matching item to the callback. Do not
-         * pass an array of one or more items or the entire cart.
-         *
-         * SUGGESTION: While it is not necessary, you might find it easier to
-         * use the $ operator in a projection document in your call to find() as
-         * a means of selecting the matching item. Again, take care to pass only
-         * the matching item (not an array) to the callback. See:
-         * https://docs.mongodb.org/manual/reference/operator/projection/positional/
-         *
-         * As context for this method to better understand its purpose, look at
-         * how cart.itemInCart is used in the mongomart.js app.
-         *
-         */
-
-        callback(null);
-
-        // TODO-lab6 Replace all code above (in this method).
+        this.db.collection("cart")
+        .find({userId: userId, "items._id": itemId}, {"items.$": 1})
+        .limit(1)
+        .next((err, item) => {
+            assert.equal(null, err);
+            if (item != null) {
+                item = item.items[0];
+            }
+            callback(item);
+        });
     }
 
 
