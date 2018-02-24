@@ -268,13 +268,9 @@ MongoClient.connect('mongodb://localhost:27017/mongomart', (err, db) => {
     function cartTotal(userCart) {
         "use strict";
 
-        var total = 0;
-        for (var i=0; i<userCart.items.length; i++) {
-            var item = userCart.items[i];
-            total += item.price * item.quantity;
-        }
-
-        return total;
+        return userCart.items.reduce((previousItem, currentItem) => {
+            return previousItem + (currentItem.price * currentItem.quantity);
+        }, 0);
     }
 
 
